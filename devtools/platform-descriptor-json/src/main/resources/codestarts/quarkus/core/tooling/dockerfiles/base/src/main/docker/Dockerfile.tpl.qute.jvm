@@ -45,8 +45,9 @@ RUN microdnf install curl ca-certificates $\{JAVA_PACKAGE} \
 # Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
-COPY {buildtool.build-dir}/lib/* /deployments/lib/
-COPY {buildtool.build-dir}/*-runner.jar /deployments/app.jar
+# The lib directory may not always be present (when using uber jar packaging), so let's COPY it along with something that will always be there.
+COPY {buildtool.build-dir}/lib/* {buildtool.build-dir}/*-runner.jar /deployments/lib/
+RUN mv /deployments/lib/*-runner.jar /deployments/app.jar
 
 EXPOSE 8080
 USER 1001
