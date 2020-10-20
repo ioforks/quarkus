@@ -43,6 +43,7 @@ import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.deployment.util.FileUtil;
 import io.quarkus.kubernetes.spi.ConfiguratorBuildItem;
 import io.quarkus.kubernetes.spi.DecoratorBuildItem;
+import io.quarkus.kubernetes.spi.KubernetesAdditionalResourceBuildItem;
 import io.quarkus.kubernetes.spi.KubernetesDeploymentTargetBuildItem;
 import io.quarkus.kubernetes.spi.KubernetesPortBuildItem;
 import io.quarkus.runtime.LaunchMode;
@@ -86,6 +87,7 @@ class KubernetesProcessor {
             LaunchModeBuildItem launchMode,
             List<KubernetesPortBuildItem> kubernetesPorts,
             EnabledKubernetesDeploymentTargetsBuildItem kubernetesDeploymentTargets,
+            List<KubernetesAdditionalResourceBuildItem> additionalResources,
             List<ConfiguratorBuildItem> configurators,
             List<DecoratorBuildItem> decorators,
             BuildProducer<GeneratedFileSystemResourceBuildItem> generatedResourceProducer) {
@@ -176,7 +178,8 @@ class KubernetesProcessor {
                     resourceEntry.getKey().replace(root.toAbsolutePath().toString(), KUBERNETES);
                     if (fileName.endsWith(".yml") || fileName.endsWith(".json")) {
                         String target = fileName.substring(0, fileName.lastIndexOf("."));
-                        if (!deploymentTargets.contains(target)) {
+                        if (!deploymentTargets.contains(target) &&
+                                !additionalResources.stream().filter(i -> target.equals(i.getName())).findAny().isPresent()) {
                             continue;
                         }
                     }
