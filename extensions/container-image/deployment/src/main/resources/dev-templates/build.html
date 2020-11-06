@@ -16,6 +16,14 @@ color: gray;
         <option value="fast-jar">Fast Jar</option>
         <option value="native">Native</option>
     </select>
+
+    Builder Type:
+    <select name="quarkus.container-image.builder" required="false">
+    {#for item in info:builder}
+        <option value="{item.name}">{item.name}</option>
+    {/for}
+    </select>
+ 
     <input type="submit" value="Build" >
 </form>
 {/body}

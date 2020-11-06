@@ -39,6 +39,7 @@ import io.quarkus.bootstrap.util.ZipUtils;
 import io.quarkus.builder.Version;
 import io.quarkus.container.image.deployment.ContainerImageConfig;
 import io.quarkus.container.image.deployment.util.NativeBinaryUtil;
+import io.quarkus.container.spi.AvailableContainerImageExtensionBuildItem;
 import io.quarkus.container.spi.ContainerImageBuildRequestBuildItem;
 import io.quarkus.container.spi.ContainerImageInfoBuildItem;
 import io.quarkus.container.spi.ContainerImageLabelBuildItem;
@@ -65,6 +66,11 @@ public class JibProcessor {
     public static final String JIB = "jib";
     private static final IsClassPredicate IS_CLASS_PREDICATE = new IsClassPredicate();
     private static final String BINARY_NAME_IN_CONTAINER = "application";
+
+    @BuildStep
+    public AvailableContainerImageExtensionBuildItem availability() {
+        return new AvailableContainerImageExtensionBuildItem(JIB);
+    }
 
     @BuildStep(onlyIf = JibBuild.class)
     public CapabilityBuildItem capability() {

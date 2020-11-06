@@ -24,6 +24,7 @@ import org.jboss.logging.Logger;
 
 import io.quarkus.container.image.deployment.ContainerImageConfig;
 import io.quarkus.container.image.deployment.util.NativeBinaryUtil;
+import io.quarkus.container.spi.AvailableContainerImageExtensionBuildItem;
 import io.quarkus.container.spi.ContainerImageBuildRequestBuildItem;
 import io.quarkus.container.spi.ContainerImageInfoBuildItem;
 import io.quarkus.container.spi.ContainerImagePushRequestBuildItem;
@@ -43,14 +44,19 @@ import io.quarkus.deployment.util.ExecUtil;
 public class DockerProcessor {
 
     private static final Logger log = Logger.getLogger(DockerProcessor.class);
+    private static final String DOCKER = "docker";
     private static final String DOCKERFILE_JVM = "Dockerfile.jvm";
     private static final String DOCKERFILE_FAST_JAR = "Dockerfile.fast-jar";
     private static final String DOCKERFILE_NATIVE = "Dockerfile.native";
     private static final String DOCKER_DIRECTORY_NAME = "docker";
-
     static final String DOCKER_CONTAINER_IMAGE_NAME = "docker";
 
     private final DockerWorking dockerWorking = new DockerWorking();
+
+    @BuildStep
+    public AvailableContainerImageExtensionBuildItem availability() {
+        return new AvailableContainerImageExtensionBuildItem(DOCKER);
+    }
 
     @BuildStep(onlyIf = DockerBuild.class)
     public CapabilityBuildItem capability() {
